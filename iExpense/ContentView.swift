@@ -8,6 +8,34 @@
 import SwiftUI
 
 
+struct ListView: View {
+    var expenseItem: ExpenseItem
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text(expenseItem.name)
+                    .font(.headline)
+                Text(expenseItem.type)
+            }
+            
+            Spacer()
+            Text(expenseItem.amount, format: Expenses.currencyCode)
+        }
+        .foregroundColor(getExpenseItemColor(amount: expenseItem.amount))
+    }
+    
+    func getExpenseItemColor(amount: Double) -> Color {
+        if amount > 100.0 {
+            return .red
+        } else if amount > 10.0 {
+            return .orange
+        } else {
+            return .green
+        }
+    }
+}
+
 struct ContentView: View {
     @StateObject var expenses = Expenses()
         
@@ -16,19 +44,28 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(expenses.items) { item in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(item.name)
-                                .font(.headline)
-                            Text(item.type)
+                Section {
+                    ForEach(expenses.items) { item in
+                        if item.type == "Personal" {
+                            ListView(expenseItem: item)
                         }
-                        
-                        Spacer()
-                        Text(item.amount, format: Expenses.currencyCode)
                     }
+                    .onDelete(perform: removeItems)
+                } header : {
+                    Text("Personal Expenses")
                 }
-                .onDelete(perform: removeItems)
+                
+                Section {
+                    ForEach(expenses.items) { item in
+                        if item.type == "Business" {
+                            ListView(expenseItem: item)
+                        }
+                    }
+                    .onDelete(perform: removeItems)
+                } header : {
+                    Text("Business Expenses")
+                }
+                
             }
             .navigationTitle("iExpense")
             .toolbar {
@@ -43,7 +80,8 @@ struct ContentView: View {
             AddView(expenses: expenses)
         }
     }
-        
+    
+    
     
     func removeItems(at offsets: IndexSet) {
         expenses.items.remove(atOffsets: offsets)

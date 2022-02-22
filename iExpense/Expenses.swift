@@ -14,6 +14,8 @@ class Expenses: ObservableObject {
         .currency(code: Locale.current.currencyCode ?? "USD")
     }
     
+    static var expenseType = ["Personal", "Business"]
+    
     @Published var items = [ExpenseItem]() {
         didSet {
             if let encoded = try? JSONEncoder().encode(items) {
