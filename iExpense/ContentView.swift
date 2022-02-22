@@ -53,7 +53,7 @@ struct ContentView: View {
                         }
                         .onDelete(perform: removeItems)
                     } header : {
-                        Text("Personal Expenses")
+                        Text(type)
                     }
                 }
             }
