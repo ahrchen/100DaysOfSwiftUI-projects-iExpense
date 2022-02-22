@@ -9,6 +9,11 @@ import Foundation
 import SwiftUI
 
 class Expenses: ObservableObject {
+    
+    static var currencyCode: FloatingPointFormatStyle<Double>.Currency {
+        .currency(code: Locale.current.currencyCode ?? "USD")
+    }
+    
     @Published var items = [ExpenseItem]() {
         didSet {
             if let encoded = try? JSONEncoder().encode(items) {
