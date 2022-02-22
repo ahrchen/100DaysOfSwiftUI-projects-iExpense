@@ -44,28 +44,18 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
-                Section {
-                    ForEach(expenses.items) { item in
-                        if item.type == "Personal" {
-                            ListView(expenseItem: item)
+                ForEach(Expenses.expenseType, id: \.self) { type in
+                    Section {
+                        ForEach(expenses.items) { item in
+                            if item.type == type {
+                                ListView(expenseItem: item)
+                            }
                         }
+                        .onDelete(perform: removeItems)
+                    } header : {
+                        Text("Personal Expenses")
                     }
-                    .onDelete(perform: removeItems)
-                } header : {
-                    Text("Personal Expenses")
                 }
-                
-                Section {
-                    ForEach(expenses.items) { item in
-                        if item.type == "Business" {
-                            ListView(expenseItem: item)
-                        }
-                    }
-                    .onDelete(perform: removeItems)
-                } header : {
-                    Text("Business Expenses")
-                }
-                
             }
             .navigationTitle("iExpense")
             .toolbar {
